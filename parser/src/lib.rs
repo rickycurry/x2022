@@ -1,20 +1,26 @@
-// use std::path::Path;
-// use std::fs::File;
-// use std::io::prelude::*;
+use std::path::Path;
+use std::fs::File;
+use std::str::FromStr;
+use std::io::BufReader;
+use std::io::BufRead;
 
-pub fn parse(_filename: &str) -> Vec<String> {
-    // let path = Path::new("../input/" + filename + ".txt");
+pub fn parse(filename: &str) -> Vec<String> {
+    // println!("{:?}", std::env::current_dir());
+    let mut string = match String::from_str("./input/") {
+        Ok(s) => s,
+        Err(_e) => return Vec::new(),
+    };
+    string += filename;
+    string += ".txt";
+    let path = Path::new(&string);
 
-    // // Open the path in read-only mode, returns `io::Result<File>`
-    // let mut file = match File::open(&path) {
-    //     Err(why) => panic!("couldn't open {}: {}", path.display(), why),
-    //     Ok(file) => file,
-    // };
+    // Open the path in read-only mode, returns `io::Result<File>`
+    let file = match File::open(&path) {
+        Err(why) => panic!("couldn't open {}: {}", path.display(), why),
+        Ok(file) => file,
+    };
 
-    // // Read the file contents into a string, returns `io::Result<usize>`
-    // // let mut ret = Vec<String>::new();
-    // // if let Ok(lines) = io::BufReader::new(file).lines() {
-
-    // // }
-    return Vec::new();
+    let file = BufReader::new(file);
+    let result: Result<Vec<String>, std::io::Error> = file.lines().collect();
+    return result.unwrap();
 }
